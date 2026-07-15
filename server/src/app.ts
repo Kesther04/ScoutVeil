@@ -12,8 +12,8 @@ app.use(cors());
 app.use(helmet());
 
 // Routes
-app.get("/", (req, res) => {
-    res.send("Welcome to the ScoutVeil API");
+app.get("/", (_, res) => {
+    res.json({message: "Welcome to the ScoutVeil AI server!"});
 });
 
 export default app;
