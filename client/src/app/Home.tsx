@@ -11,6 +11,8 @@ import {
   Fingerprint,
   ChevronDown,
   LogIn,
+  ArrowUpRight,
+  Zap,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Logo from "../shared/components/Logo";
@@ -159,8 +161,8 @@ function Hero() {
         }}
       />
 
-      <div className="relative z-10 max-w-350 mx-auto grid lg:grid-cols-2 gap-16 items-center w-full">
-        <motion.div initial="hidden" animate="show" variants={container}>
+      <div className="relative z-10 max-w-350 mx-auto grid lg:grid-cols-2 gap-3 items-center w-full">
+        <motion.div initial="hidden" animate="show" variants={container} >
           <motion.div variants={fadeUp}>
             <div className="mb-5 inline-flex items-center gap-2 rounded-full px-3 py-1.5 bg-[#E8A64A]/10 border border-[#E8A64A]/25">
               <span className="h-1.5 w-1.5 rounded-full bg-[#E8A64A] animate-pulse" />
@@ -172,9 +174,10 @@ function Hero() {
 
           <motion.h1
             variants={fadeUp}
-            className="text-5xl md:text-6xl font-light text-[#E4E2ED] leading-[1.05] tracking-tight mb-6"
+            className="text-5xl md:text-6xl font-semibold italic text-[#E4E2ED] max-w-md leading-[1.05] tracking-tight mb-10"
+            
           >
-            Know what they changed
+            Know what competitors changed
             <br />
             before your next call.
           </motion.h1>
@@ -183,9 +186,7 @@ function Hero() {
             variants={fadeUp}
             className="text-lg text-[#94A3B8] leading-relaxed mb-10 max-w-md"
           >
-            ScoutVeil watches your competitors' websites, hiring activity, and
-            public infrastructure — then tells you what it means, every week,
-            in plain language.
+            ScoutVeil runs passive recon on your competitors' features, pricing and messaging—delivering clear, actionable intelligence straight to early-stage B2B founders on autopilot.
           </motion.p>
 
           <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-4">
@@ -211,79 +212,86 @@ function Hero() {
             reference (badge callouts framing the visual), but the visual
             itself stays the real product artifact, not decoration. */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="relative"
+          variants={fadeUp}
+          className="relative w-full  mx-auto rounded-lg border border-white/10 bg-[#0C0D12] overflow-hidden shadow-2xl "
         >
-          {/* Floating badge — top right, mirrors "Security Score 98/100" chip */}
+          {/* Hero Image Base */}
+          <img
+            src={heroImg}
+            alt="ScoutVeil Intelligence Dashboard"
+            className="w-full h-auto object-cover opacity-80"
+          />
+
+          {/* Subtle Inner Gradient Overlay to blend text/badges */}
+          <div className="absolute inset-0 bg-gradient from-[#0C0D12]/80 via-transparent to-[#0C0D12]/40 pointer-events-none" />
+
+          {/* TOP-RIGHT BADGE: Critical Intel Alert */}
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.6 }}
-            className="absolute -top-5 -right-5 z-20 rounded-xl border border-white/10 bg-[#12141D] shadow-xl px-4 py-3 flex items-center gap-3"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4, delay: 0.4 }}
+            className="absolute top-4 right-4 z-10 rounded-xl border border-amber-500/30 bg-[#12141D]/90 backdrop-blur-md px-3.5 py-2.5 shadow-lg flex items-center gap-3"
           >
-            <div className="w-8 h-8 rounded-lg bg-[#E8A64A]/15 flex items-center justify-center shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-[#E8A64A]/15 border border-[#E8A64A]/30 flex items-center justify-center shrink-0">
               <ShieldAlert className="w-4 h-4 text-[#E8A64A]" strokeWidth={2} />
             </div>
             <div>
-              <div className="text-[10px] text-[#94A3B8] uppercase tracking-wide">
-                Threat score
+              <div className="text-[10px] font-mono text-[#94A3B8] uppercase tracking-wider">
+                Pricing Shift
               </div>
-              <div className="text-sm font-semibold text-[#E4E2ED]">Medium</div>
+              <div className="text-xs font-semibold text-[#E4E2ED] flex items-center gap-1">
+                Upmarket Push <ArrowUpRight className="w-3 h-3 text-[#E8A64A]" />
+              </div>
             </div>
           </motion.div>
 
-          {/* Main diff-card — the actual product artifact */}
-          {/* <div className="rounded-2xl border border-white/10 bg-white/4 backdrop-blur-xl shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-3 border-b border-white/5 bg-white/2">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-[#E85A4A]" />
-                <span className="font-mono text-xs text-[#94A3B8]">
-                  rivalco.com/pricing
-                </span>
-              </div>
-              <span className="font-mono text-[10px] text-[#94A3B8] uppercase tracking-wide">
-                detected 4h ago
-              </span>
-            </div>
-            <div className="p-5 font-mono text-[13px] leading-7 space-y-0.5">
-              <DiffLine type="meta">Starter — $0/mo</DiffLine>
-              <DiffLine type="removed">Team — $49/mo, up to 5 seats</DiffLine>
-              <DiffLine type="added">Team — $89/mo, up to 5 seats</DiffLine>
-              <DiffLine type="added">
-                Enterprise — Custom pricing, SSO included
-              </DiffLine>
-            </div>
-            <div className="px-5 py-4 border-t border-white/5 bg-[#E8A64A]/6">
-              <p className="text-xs text-[#E4E2ED]">
-                <span className="text-[#F0B96B] font-medium">Read:</span>{" "}
-                Pricing restructure plus a new enterprise tier — signals an
-                upmarket push.
-              </p>
-            </div>
-          </div> */}
-
-          <div className="relative rounded-lg border border-white/10 bg-white/4 backdrop-blur-xl shadow-2xl overflow-hidden">
-            <img src={heroImg} alt="heroImg" className="w-full" />
-          </div>
-
-          {/* Floating badge — bottom left, mirrors "Scan Complete" chip */}
+          {/* BOTTOM-LEFT BADGE GROUP: Live Recon Metrics */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.8 }}
-            className="absolute -bottom-5 -left-5 z-20 rounded-xl border border-[#4ADE9E]/20 bg-[#12141D] shadow-xl px-4 py-3 flex items-center gap-3"
+            transition={{ duration: 0.4, delay: 0.6 }}
+            className="absolute bottom-4 left-4 z-10 flex items-center gap-2"
           >
-            <div className="w-8 h-8 rounded-lg bg-[#4ADE9E]/15 flex items-center justify-center shrink-0">
-              <Radar className="w-4 h-4 text-[#4ADE9E]" strokeWidth={2} />
-            </div>
-            <div>
-              <div className="text-sm font-semibold text-[#E4E2ED]">
-                Scan complete
+            {/* Metric 1: Monitored Rivals */}
+            <div className="rounded-xl border border-white/10 bg-[#12141D]/90 backdrop-blur-md px-3.5 py-2.5 shadow-lg flex items-center gap-2.5">
+              <div className="w-2 h-2 rounded-full bg-[#4ADE9E] animate-pulse" />
+              <div>
+                <div className="text-[10px] font-mono text-[#94A3B8] uppercase tracking-wider">
+                  Targets Monitored
+                </div>
+                <div className="text-xs font-bold font-mono text-[#E4E2ED]">
+                  12 Rivals
+                </div>
               </div>
-              <div className="text-[10px] text-[#4ADE9E]">3 new signals found</div>
             </div>
+
+            {/* Metric 2: Scan Latency */}
+            <div className="hidden sm:flex rounded-xl border border-white/10 bg-[#12141D]/90 backdrop-blur-md px-3.5 py-2.5 shadow-lg items-center gap-2.5">
+              <div className="w-6 h-6 rounded-lg bg-blue-500/15 flex items-center justify-center shrink-0">
+                <Zap className="w-3.5 h-3.5 text-blue-400" />
+              </div>
+              <div>
+                <div className="text-[10px] font-mono text-[#94A3B8] uppercase tracking-wider">
+                  Sync Rate
+                </div>
+                <div className="text-xs font-bold font-mono text-[#E4E2ED]">
+                  Real-time
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* BOTTOM-RIGHT BADGE: Signal Pulse */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4, delay: 0.8 }}
+            className="absolute bottom-4 right-4 z-10 rounded-xl border border-[#4ADE9E]/30 bg-[#12141D]/90 backdrop-blur-md px-3 py-2 shadow-lg flex items-center gap-2"
+          >
+            <Radar className="w-3.5 h-3.5 text-[#4ADE9E]" />
+            <span className="text-[11px] font-medium text-[#4ADE9E]">
+              3 new signals
+            </span>
           </motion.div>
         </motion.div>
       </div>
