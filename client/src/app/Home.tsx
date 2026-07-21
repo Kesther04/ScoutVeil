@@ -174,7 +174,7 @@ function Hero() {
 
           <motion.h1
             variants={fadeUp}
-            className="text-5xl md:text-6xl font-semibold italic text-[#E4E2ED] max-w-md leading-[1.05] tracking-tight mb-10"
+            className="text-5xl md:text-6xl font-medium italic text-[#E4E2ED] max-w-md leading-[1.05] tracking-tight mb-10"
             
           >
             Know what competitors changed
@@ -219,7 +219,7 @@ function Hero() {
           <img
             src={heroImg}
             alt="ScoutVeil Intelligence Dashboard"
-            className="w-full h-auto object-cover opacity-80"
+            className="w-full h-85 lg:h-115 object-cover opacity-80"
           />
 
           {/* Subtle Inner Gradient Overlay to blend text/badges */}
@@ -295,6 +295,18 @@ function Hero() {
           </motion.div>
         </motion.div>
       </div>
+
+      {/* Scroll hint */}
+        <div className="absolute bottom-6 inset-x-0 flex flex-col items-center gap-2 opacity-40">
+          <span className="text-xs text-white tracking-widest uppercase">Scroll to explore</span>
+          <motion.span
+            className="text-white text-lg"
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+          >
+            ↓
+          </motion.span>
+        </div>
     </section>
   );
 }
