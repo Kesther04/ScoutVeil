@@ -17,8 +17,8 @@ interface AuthShellProps {
 function BrandPanel() {
   return (
     <div className="relative hidden lg:flex flex-col justify-between overflow-hidden bg-[#0B0D14] px-14 py-12">
-      <div className="absolute -top-24 -left-16 w-[420px] h-[420px] rounded-full bg-[#E8A64A]/8 blur-[120px] pointer-events-none" />
-      <div className="absolute -bottom-16 -right-12 w-[340px] h-[340px] rounded-full bg-[#E8A64A]/5 blur-[100px] pointer-events-none" />
+      <div className="absolute -top-24 -left-16 w-[420px] h-[420px] rounded-full bg-[#E8A64A]/20 blur-[120px] pointer-events-none" />
+      <div className="absolute -bottom-16 -right-12 w-[340px] h-[340px] rounded-full bg-[#E8A64A]/20 blur-[100px] pointer-events-none" />
       <div
         className="absolute inset-0 pointer-events-none opacity-60"
         style={{

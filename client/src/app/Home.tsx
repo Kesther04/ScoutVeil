@@ -14,7 +14,8 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Logo from "../shared/components/Logo";
-import hero from "../assets/hero.jpeg"
+// import hero from "../assets/hero.jpeg"
+import heroImg from "../assets/hero_img.jpeg"
 
 /* ------------------------------------------------------------------ */
 /*  Design tokens (ScoutVeil brand — dark only, amber-orange accent)   */
@@ -54,12 +55,12 @@ function SectionLabel({ children }: { children: string }) {
 function Nav() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0B0D14]/80 backdrop-blur-md">
-      <div className="max-w-[1450px] mx-auto px-6 h-16 flex items-center justify-between">
+      <div className="max-w-362.5 mx-auto px-6 h-18 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Logo />
         </div>
 
-        <nav className="hidden md:flex items-center gap-8 text-sm text-[#94A3B8]">
+        <nav className="hidden md:flex items-center gap-8 text-sm  text-[#94A3B8]">
           <a href="#hero" className="hover:text-[#E4E2ED] transition-colors">
             Home
           </a>
@@ -67,7 +68,7 @@ function Nav() {
             Features
           </a>
           <a href="#how-it-works" className="hover:text-[#E4E2ED] transition-colors">
-            How it works
+            How It Works
           </a>
           <a href="#roadmap" className="hover:text-[#E4E2ED] transition-colors">
             Roadmap
@@ -86,7 +87,7 @@ function Nav() {
             Log in
           </Link>
           <Link
-            to="/auth/signup"
+            to="/auth/register"
             className="text-sm font-medium text-[#0B0D14] bg-[#E8A64A] hover:bg-[#F0B96B] transition-colors rounded-lg px-4 py-2"
           >
             Start tracking
@@ -125,7 +126,7 @@ function Hero() {
     <section
       id="hero"
       style={{
-          backgroundImage: `url(${hero})`,
+          // backgroundImage: `url(${hero})`,
           backgroundAttachment: "fixed",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -144,8 +145,8 @@ function Hero() {
 
      
       {/* Restrained glow accents — the only background treatment, no image */}
-      <div className="absolute -top-24 -right-16 w-[500px] h-[500px] rounded-full bg-[#E8A64A]/8 blur-[120px] pointer-events-none" />
-      <div className="absolute -bottom-12 -left-12 w-[360px] h-[360px] rounded-full bg-[#E8A64A]/5 blur-[100px] pointer-events-none" />
+      <div className="absolute -top-24 -right-16 w-[500px] h-[500px] rounded-full bg-[#E8A64A]/30 blur-[120px] pointer-events-none" />
+      <div className="absolute -bottom-12 -left-12 w-[360px] h-[360px] rounded-full bg-[#E8A64A]/30 blur-[100px] pointer-events-none" />
 
       {/* Subtle grid lines — quiet texture, not a photo */}
       <div
@@ -158,7 +159,7 @@ function Hero() {
         }}
       />
 
-      <div className="relative z-10 max-w-[1400px] mx-auto grid lg:grid-cols-2 gap-16 items-center w-full">
+      <div className="relative z-10 max-w-350 mx-auto grid lg:grid-cols-2 gap-16 items-center w-full">
         <motion.div initial="hidden" animate="show" variants={container}>
           <motion.div variants={fadeUp}>
             <div className="mb-5 inline-flex items-center gap-2 rounded-full px-3 py-1.5 bg-[#E8A64A]/10 border border-[#E8A64A]/25">
@@ -189,7 +190,7 @@ function Hero() {
 
           <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-4">
             <Link
-              to="/auth/signup"
+              to="/auth/register"
               className="group flex items-center gap-2 bg-[#E8A64A] hover:bg-[#F0B96B] transition-colors text-[#0B0D14] font-medium rounded-lg px-6 py-3"
             >
               Start tracking a competitor
@@ -234,7 +235,7 @@ function Hero() {
           </motion.div>
 
           {/* Main diff-card — the actual product artifact */}
-          <div className="rounded-2xl border border-white/10 bg-white/4 backdrop-blur-xl shadow-2xl overflow-hidden">
+          {/* <div className="rounded-2xl border border-white/10 bg-white/4 backdrop-blur-xl shadow-2xl overflow-hidden">
             <div className="flex items-center justify-between px-5 py-3 border-b border-white/5 bg-white/2">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-[#E85A4A]" />
@@ -261,6 +262,10 @@ function Hero() {
                 upmarket push.
               </p>
             </div>
+          </div> */}
+
+          <div className="relative rounded-lg border border-white/10 bg-white/4 backdrop-blur-xl shadow-2xl overflow-hidden">
+            <img src={heroImg} alt="heroImg" className="w-full" />
           </div>
 
           {/* Floating badge — bottom left, mirrors "Scan Complete" chip */}
@@ -360,7 +365,7 @@ function FeatureCard({ f, index }: { f: (typeof features)[number]; index: number
 function Features() {
   return (
     <section id="features" className="py-28 px-6 border-b border-white/5">
-      <div className="max-w-[1400px] mx-auto">
+      <div className="max-w-350 mx-auto">
         <motion.div
           initial="hidden"
           whileInView="show"
@@ -427,7 +432,7 @@ function HowItWorks() {
 
   return (
     <section id="how-it-works" className="py-28 px-6 border-b border-white/5">
-      <div className="max-w-[1400px] mx-auto">
+      <div className="max-w-350 mx-auto">
         <motion.div
           initial="hidden"
           whileInView="show"
@@ -602,7 +607,7 @@ const statusColor: Record<string, string> = {
 function Roadmap() {
   return (
     <section id="roadmap" className="py-28 px-6 border-b border-white/5">
-      <div className="max-w-[1400px] mx-auto">
+      <div className="max-w-350 mx-auto">
         <motion.div
           initial="hidden"
           whileInView="show"
@@ -758,7 +763,7 @@ function FAQ() {
             <p className="text-sm text-[#94A3B8]">No credit card required to start.</p>
           </div>
           <Link
-            to="/auth/signup"
+            to="/auth/register"
             className="flex items-center gap-2 bg-[#E8A64A] hover:bg-[#F0B96B] transition-colors text-[#0B0D14] font-medium rounded-lg px-6 py-3 whitespace-nowrap"
           >
             Start tracking a competitor
@@ -775,7 +780,7 @@ function FAQ() {
 function Footer() {
   return (
     <footer className="py-16 px-6">
-      <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+      <div className="max-w-350 mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
         <div>
           <div className="flex items-center gap-2 mb-3">
             <Logo />
@@ -811,7 +816,7 @@ function Footer() {
               <Link to="/auth/login" className="hover:text-[#E4E2ED] transition-colors">
                 Log in
               </Link>
-              <Link to="/auth/signup" className="hover:text-[#E4E2ED] transition-colors">
+              <Link to="/auth/register" className="hover:text-[#E4E2ED] transition-colors">
                 Sign up
               </Link>
             </div>
@@ -838,7 +843,7 @@ function Footer() {
         </div>
       </div>
 
-      <div className="max-w-[1400px] mx-auto mt-12 pt-8 border-t border-white/5">
+      <div className="max-w-350 mx-auto mt-12 pt-8 border-t border-white/5">
         <p className="text-xs text-[#94A3B8] font-mono">
           ScoutVeil — data collected from public sources only. Passive recon,
           no active scanning.
