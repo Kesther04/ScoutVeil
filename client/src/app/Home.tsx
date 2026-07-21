@@ -102,26 +102,26 @@ function Nav() {
 
 /* ------------------------------ Hero ------------------------------ */
 
-function DiffLine({
-  type,
-  children,
-}: {
-  type: "removed" | "added" | "meta";
-  children: string;
-}) {
-  const styles = {
-    removed: "text-[#E85A4A]/70 line-through decoration-[#E85A4A]/40",
-    added: "text-[#4ADE9E]",
-    meta: "text-[#94A3B8]",
-  };
-  const prefix = { removed: "−", added: "+", meta: " " };
-  return (
-    <div className={`flex gap-3 ${styles[type]}`}>
-      <span className="select-none opacity-50">{prefix[type]}</span>
-      <span>{children}</span>
-    </div>
-  );
-}
+// function DiffLine({
+//   type,
+//   children,
+// }: {
+//   type: "removed" | "added" | "meta";
+//   children: string;
+// }) {
+//   const styles = {
+//     removed: "text-[#E85A4A]/70 line-through decoration-[#E85A4A]/40",
+//     added: "text-[#4ADE9E]",
+//     meta: "text-[#94A3B8]",
+//   };
+//   const prefix = { removed: "−", added: "+", meta: " " };
+//   return (
+//     <div className={`flex gap-3 ${styles[type]}`}>
+//       <span className="select-none opacity-50">{prefix[type]}</span>
+//       <span>{children}</span>
+//     </div>
+//   );
+// }
 
 function Hero() {
   return (
