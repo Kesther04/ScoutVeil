@@ -13,6 +13,8 @@ import {
   LogIn,
   ArrowUpRight,
   Zap,
+  Menu,
+  X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Logo from "../shared/components/Logo";
@@ -55,6 +57,42 @@ function SectionLabel({ children }: { children: string }) {
 /* ------------------------------ Nav ------------------------------- */
 
 function Nav() {
+  const [currentSection, setCurrentSection] = useState<string>("hero");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+
+  /* Active nav section */
+  useEffect(() => {
+    const ids = ["hero", "features", "howitworks", "roadmap","faq"];
+    const handleScroll = () => {
+      const scrollMid = window.scrollY + window.innerHeight / 2;
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= scrollMid) setCurrentSection(id);
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollTo = (id: string) => {
+    setMobileMenuOpen(false);
+    setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    }, 200);
+  };
+
+  
+  const navItems = [
+    { label: "Home",          id: "hero"       },
+    { label: "Features",      id: "features"   },
+    { label: "How It Works",  id: "howitworks" },
+    { label: "Roadmap",       id: "roadmap"    },
+    { label: "FAQ", id: "faq"        },
+  ];
+
+  
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#0B0D14]/80 backdrop-blur-md">
       <div className="max-w-362.5 mx-auto px-6 h-18 flex items-center justify-between">
@@ -63,39 +101,97 @@ function Nav() {
         </div>
 
         <nav className="hidden md:flex items-center gap-8 text-sm  text-[#94A3B8]">
-          <a href="#hero" className="hover:text-[#E4E2ED] transition-colors">
-            Home
-          </a>
-          <a href="#features" className="hover:text-[#E4E2ED] transition-colors">
-            Features
-          </a>
-          <a href="#how-it-works" className="hover:text-[#E4E2ED] transition-colors">
-            How It Works
-          </a>
-          <a href="#roadmap" className="hover:text-[#E4E2ED] transition-colors">
-            Roadmap
-          </a>
-          <a href="#faq" className="hover:text-[#E4E2ED] transition-colors">
-            FAQ
-          </a>
+          {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollTo(item.id)}
+                className={`transition-colors bg-transparent border-none cursor-pointer ${
+                  currentSection === item.id
+                    ? ` text-[#E4E2ED]`
+                    : `text-[#94A3B8] hover:text-[#E4E2ED]`
+                }`}
+              >
+                {item.label}
+              </button>
+          ))}
         </nav>
 
         <div className="flex items-center gap-2">
           <Link
             to="/auth/login"
-            className="hidden sm:flex items-center gap-1.5 text-sm text-[#94A3B8] hover:text-[#E4E2ED] transition-colors px-3 py-2"
+            className="sm:flex hidden items-center gap-1.5 text-sm text-[#94A3B8] hover:text-[#E4E2ED] transition-colors px-3 py-2"
           >
             <LogIn className="w-3.5 h-3.5" />
             Log in
           </Link>
+
           <Link
             to="/auth/register"
-            className="text-sm font-medium text-[#0B0D14] bg-[#E8A64A] hover:bg-[#F0B96B] transition-colors rounded-lg px-4 py-2"
+            className="sm:flex hidden text-sm font-medium text-[#0B0D14] bg-[#E8A64A] hover:bg-[#F0B96B] transition-colors rounded-lg px-4 py-2"
           >
             Start tracking
           </Link>
+
+          {/* Hamburger — mobile only */}
+          <button
+            onClick={() => setMobileMenuOpen((o) => !o)}
+            aria-label="Toggle menu"
+            className={`flex h-9 w-9 items-center justify-center rounded-lg border transition-colors md:hidden 
+              ${"border-white/15 text-white/70 hover:bg-white/8"}`}
+          >
+            {mobileMenuOpen
+              ? <X className="h-5 w-5" />
+              : <Menu className="h-5 w-5" />
+            }
+          </button>
         </div>
+
       </div>
+
+      {/* ── Mobile dropdown ── */}
+        <motion.div
+          initial={false}
+          animate={mobileMenuOpen ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
+          transition={{ duration: 0.22, ease: "easeInOut" }}
+          className="overflow-hidden md:hidden"
+        >
+          <div className="flex flex-col gap-1 border-t px-4 pb-5 pt-2 bg-[#0B0D14]/80 backdrop-blur-md">
+
+            {/* Nav links */}
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollTo(item.id)}  // scrollTo handles both close + scroll
+                className={`w-full rounded-xl px-4 py-3 text-left text-sm font-medium transition-colors border-none cursor-pointer ${
+                  currentSection === item.id
+                    ? "bg-white/8 text-white"
+                    : "text-slate-500 hover:bg-black/4"
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+
+            {/* Divider */}
+            <div className="my-2 h-px bg-white/8" />
+
+            {/* Auth buttons */}
+            <Link
+              to="/auth/login"
+              className="flex items-center gap-1.5 text-sm text-[#94A3B8] hover:text-[#E4E2ED] transition-colors px-3 py-3"
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              Log in
+            </Link>
+
+            <Link
+              to="/auth/register"
+              className="flex text-sm font-medium text-[#0B0D14] bg-[#E8A64A] hover:bg-[#F0B96B] transition-colors rounded-lg px-4 py-4"
+            >
+              Start tracking
+            </Link>
+          </div>
+        </motion.div>
     </header>
   );
 }
@@ -134,7 +230,7 @@ function Hero() {
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
         }}
-      className="relative pt-20 px-12  min-h-screen flex items-center overflow-hidden pb-12"
+      className="relative pt-20 px-5 md:px-12  min-h-screen flex items-center overflow-hidden pb-12"
     >
       {/* Base dark overlay */}
       <div className={`absolute inset-0 bg-black/75  pointer-events-none`} />
@@ -161,8 +257,8 @@ function Hero() {
         }}
       />
 
-      <div className="relative z-10 max-w-350 mx-auto grid lg:grid-cols-2 gap-3 items-center w-full">
-        <motion.div initial="hidden" animate="show" variants={container} >
+      <div className="relative z-10 max-w-350 mx-auto grid lg:grid-cols-2 gap-3 items-center w-full ">
+        <motion.div initial="hidden" animate="show" variants={container} className="py-10 md:py-0" >
           <motion.div variants={fadeUp}>
             <div className="mb-5 inline-flex items-center gap-2 rounded-full px-3 py-1.5 bg-[#E8A64A]/10 border border-[#E8A64A]/25">
               <span className="h-1.5 w-1.5 rounded-full bg-[#E8A64A] animate-pulse" />
@@ -199,7 +295,7 @@ function Hero() {
             </Link>
             
             <a
-              href="#how-it-works"
+              href="#howitworks"
               className="text-sm text-[#94A3B8] hover:text-[#E4E2ED] transition-colors"
             >
               See how it works
@@ -451,7 +547,7 @@ function HowItWorks() {
   }, []);
 
   return (
-    <section id="how-it-works" className="py-28 px-6 border-b border-white/5">
+    <section id="howitworks" className="py-28 px-6 border-b border-white/5">
       <div className="max-w-350 mx-auto">
         <motion.div
           initial="hidden"
@@ -820,7 +916,7 @@ function Footer() {
               <a href="#features" className="hover:text-[#E4E2ED] transition-colors">
                 Features
               </a>
-              <a href="#how-it-works" className="hover:text-[#E4E2ED] transition-colors">
+              <a href="#howitworks" className="hover:text-[#E4E2ED] transition-colors">
                 How it works
               </a>
               <a href="#roadmap" className="hover:text-[#E4E2ED] transition-colors">
@@ -865,7 +961,7 @@ function Footer() {
 
       <div className="max-w-350 mx-auto mt-12 pt-8 border-t border-white/5">
         <p className="text-xs text-[#94A3B8] font-mono">
-          ScoutVeil — data collected from public sources only. Passive recon,
+          ScoutVeil: data collected from public sources only. Passive recon,
           no active scanning.
         </p>
       </div>
