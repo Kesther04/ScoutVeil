@@ -1,0 +1,448 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+// ──────────────────────────────
+// Enums
+// ──────────────────────────────
+
+enum Role {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum ThreatLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum SignalType {
+  WEBSITE
+  JOB_POSTING
+  REVIEW
+  SOCIAL
+  COMPANY
+  SUBDOMAIN
+  DNS
+  TECHSTACK
+  WHOIS
+  WAYBACK
+  SSL
+}
+
+enum AlertChannel {
+  EMAIL
+  PUSH
+  IN_APP
+}
+
+enum ScanStatus {
+  PENDING
+  RUNNING
+  SUCCESS
+  FAILED
+}
+
+// ──────────────────────────────
+// Users
+// ──────────────────────────────
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  passwordHash   String
+  name           String?
+  companyName    String
+  role           Role     @default(MEMBER)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  alerts       Alert[]
+
+  @@map("users")
+}
+
+// ──────────────────────────────
+// Competitors (supporting domain)
+// ──────────────────────────────
+
+model Competitor {
+  id             String   @id @default(cuid())
+  name           String
+  domain         String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+
+  websiteSnapshots  WebsiteSnapshot[]
+  jobPostings       JobPosting[]
+  reviews           Review[]
+  socialPosts       SocialPost[]
+  companySignals    CompanySignal[]
+  changeLogs        ChangeLog[]
+
+  subdomains  Subdomain[]
+  dnsRecords  DnsRecord[]
+  techStacks  TechStackEntry[]
+  whoisRecords WhoisRecord[]
+  waybackSnapshots WaybackSnapshot[]
+  sslCertificates SslCertificate[]
+
+  digests         Digest[]
+  threatScores    ThreatScore[]
+  narratives      Narrative[]
+  recommendations Recommendation[]
+  alerts          Alert[]
+
+  @@map("competitors")
+}
+
+// ──────────────────────────────
+// Signal Monitor: Website
+// ──────────────────────────────
+
+model WebsiteSnapshot {
+  id           String   @id @default(cuid())
+  competitorId String
+  pageType     String   // "homepage" | "pricing" | "blog" etc
+  url          String
+  contentHash  String
+  rawContent   String   @db.Text
+  diffSummary  String?  @db.Text
+  scannedAt    DateTime @default(now())
+
+  competitor Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+
+  @@index([competitorId, pageType])
+  @@map("website_snapshots")
+}
+
+// ──────────────────────────────
+// Signal Monitor: Jobs
+// ──────────────────────────────
+
+model JobPosting {
+  id           String   @id @default(cuid())
+  competitorId String
+  title        String
+  department   String?
+  location     String?
+  url          String
+  postedAt     DateTime?
+  scannedAt    DateTime @default(now())
+
+  competitor Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+
+  @@index([competitorId, department])
+  @@map("job_postings")
+}
+
+// ──────────────────────────────
+// Signal Monitor: Reviews
+// ──────────────────────────────
+
+model Review {
+  id            String   @id @default(cuid())
+  competitorId  String
+  source        String   // "g2" | "capterra" | "trustpilot"
+  rating        Float?
+  sentimentScore Float?
+  content       String   @db.Text
+  reviewedAt    DateTime?
+  scannedAt     DateTime @default(now())
+
+  competitor Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+
+  @@index([competitorId, source])
+  @@map("reviews")
+}
+
+// ──────────────────────────────
+// Signal Monitor: Social
+// ──────────────────────────────
+
+model SocialPost {
+  id             String   @id @default(cuid())
+  competitorId   String
+  platform       String   // "linkedin" | "x"
+  content        String   @db.Text
+  narrativeShift String?  @db.Text
+  postedAt       DateTime?
+  scannedAt      DateTime @default(now())
+
+  competitor Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+
+  @@index([competitorId, platform])
+  @@map("social_posts")
+}
+
+// ──────────────────────────────
+// Signal Monitor: Company (funding/press)
+// ──────────────────────────────
+
+model CompanySignal {
+  id           String   @id @default(cuid())
+  competitorId String
+  type         String   // "funding" | "press" | "exec_change"
+  title        String
+  detail       String?  @db.Text
+  sourceUrl    String?
+  occurredAt   DateTime?
+  scannedAt    DateTime @default(now())
+
+  competitor Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+
+  @@index([competitorId, type])
+  @@map("company_signals")
+}
+
+// ──────────────────────────────
+// Signal Monitor: Unified Change Log
+// ──────────────────────────────
+
+model ChangeLog {
+  id           String     @id @default(cuid())
+  competitorId String
+  signalType   SignalType
+  summary      String     @db.Text
+  sourceRef    String?    // id of the originating record (website snapshot, job posting, etc)
+  createdAt    DateTime   @default(now())
+
+  competitor Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+
+  @@index([competitorId, signalType])
+  @@map("change_logs")
+}
+
+// ──────────────────────────────
+// OSINT: Subdomains
+// ──────────────────────────────
+
+model Subdomain {
+  id           String   @id @default(cuid())
+  competitorId String
+  hostname     String
+  firstSeenAt  DateTime @default(now())
+  lastSeenAt   DateTime @updatedAt
+  active       Boolean  @default(true)
+
+  competitor Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+
+  @@unique([competitorId, hostname])
+  @@map("subdomains")
+}
+
+// ──────────────────────────────
+// OSINT: DNS
+// ──────────────────────────────
+
+model DnsRecord {
+  id           String   @id @default(cuid())
+  competitorId String
+  recordType   String   // "A" | "MX" | "NS" | "TXT" etc
+  value        String
+  changedAt    DateTime @default(now())
+
+  competitor Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+
+  @@index([competitorId, recordType])
+  @@map("dns_records")
+}
+
+// ──────────────────────────────
+// OSINT: Tech Stack
+// ──────────────────────────────
+
+model TechStackEntry {
+  id           String   @id @default(cuid())
+  competitorId String
+  technology   String
+  category     String?  // "analytics" | "cms" | "payments" etc
+  detectedAt   DateTime @default(now())
+  removedAt    DateTime?
+
+  competitor Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+
+  @@index([competitorId, category])
+  @@map("tech_stack_entries")
+}
+
+// ──────────────────────────────
+// OSINT: WHOIS
+// ──────────────────────────────
+
+model WhoisRecord {
+  id           String   @id @default(cuid())
+  competitorId String
+  registrar    String?
+  registrantOrg String?
+  expiresAt    DateTime?
+  rawData      Json?
+  checkedAt    DateTime @default(now())
+
+  competitor Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+
+  @@index([competitorId])
+  @@map("whois_records")
+}
+
+// ──────────────────────────────
+// OSINT: Wayback
+// ──────────────────────────────
+
+model WaybackSnapshot {
+  id           String   @id @default(cuid())
+  competitorId String
+  snapshotUrl  String
+  capturedAt   DateTime
+  diffSummary  String?  @db.Text
+  scannedAt    DateTime @default(now())
+
+  competitor Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+
+  @@index([competitorId])
+  @@map("wayback_snapshots")
+}
+
+// ──────────────────────────────
+// OSINT: SSL
+// ──────────────────────────────
+
+model SslCertificate {
+  id           String   @id @default(cuid())
+  competitorId String
+  issuer       String?
+  subject      String?
+  issuedAt     DateTime?
+  expiresAt    DateTime?
+  fingerprint  String?
+  detectedAt   DateTime @default(now())
+
+  competitor Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+
+  @@index([competitorId])
+  @@map("ssl_certificates")
+}
+
+// ──────────────────────────────
+// AI Interpretation: Digest
+// ──────────────────────────────
+
+model Digest {
+  id           String   @id @default(cuid())
+  competitorId String
+  summary      String   @db.Text
+  rawAiOutput  Json?
+  periodStart  DateTime
+  periodEnd    DateTime
+  createdAt    DateTime @default(now())
+
+  competitor Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+
+  @@index([competitorId])
+  @@map("digests")
+}
+
+// ──────────────────────────────
+// AI Interpretation: Threat Score
+// ──────────────────────────────
+
+model ThreatScore {
+  id           String      @id @default(cuid())
+  competitorId String
+  score        Float
+  level        ThreatLevel
+  velocity     Float?
+  category     String?
+  computedAt   DateTime    @default(now())
+
+  competitor Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+
+  @@index([competitorId, computedAt])
+  @@map("threat_scores")
+}
+
+// ──────────────────────────────
+// AI Interpretation: Narrative
+// ──────────────────────────────
+
+model Narrative {
+  id             String   @id @default(cuid())
+  competitorId   String
+  title          String
+  description    String   @db.Text
+  linkedSignalIds String[] // ids of ChangeLog entries tied to this narrative
+  createdAt      DateTime @default(now())
+
+  competitor Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+
+  @@index([competitorId])
+  @@map("narratives")
+}
+
+// ──────────────────────────────
+// AI Interpretation: Recommendations
+// ──────────────────────────────
+
+model Recommendation {
+  id           String   @id @default(cuid())
+  competitorId String
+  title        String
+  detail       String   @db.Text
+  actioned     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  competitor Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+
+  @@index([competitorId])
+  @@map("recommendations")
+}
+
+// ──────────────────────────────
+// AI Interpretation: Alerts
+// ──────────────────────────────
+
+model Alert {
+  id           String       @id @default(cuid())
+  competitorId String
+  userId       String
+  channel      AlertChannel
+  title        String
+  message      String       @db.Text
+  read         Boolean      @default(false)
+  sentAt       DateTime?
+  createdAt    DateTime     @default(now())
+
+  competitor Competitor @relation(fields: [competitorId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([competitorId])
+  @@index([userId])
+  @@map("alerts")
+}
+
+// ──────────────────────────────
+// Infrastructure: Scan Runs (for queues/jobs tracking)
+// ──────────────────────────────
+
+model ScanRun {
+  id           String     @id @default(cuid())
+  competitorId String?
+  jobName      String     // "website-scan" | "job-posting-scan" | etc
+  status       ScanStatus @default(PENDING)
+  startedAt    DateTime   @default(now())
+  finishedAt   DateTime?
+  errorMessage String?    @db.Text
+
+  @@index([jobName, status])
+  @@map("scan_runs")
+}
