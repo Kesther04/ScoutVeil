@@ -358,6 +358,7 @@ BACKEND STRUCTURE
     │   │   ├── auth.routes.ts
     │   │   ├── user.repository.ts
     │   │   ├── user.types.ts
+    |   |   ├── index.ts
     │   │   └── jwt.strategy.ts
     │   │
     │   └── organizations/                                  # Multi-tenant SaaS
@@ -380,6 +381,12 @@ BACKEND STRUCTURE
     │   │   ├── date.ts
     │   │   ├── diff.ts                                     # shared text-diff utility
     │   │   ├── domainParser.ts
+    │   │   ├── appError.ts
+    │   │   ├── asyncHandler.ts
+    │   │   ├── cookies.ts
+    │   │   ├── email.ts
+    │   │   ├── password.ts
+    │   │   ├── token.ts
     │   │   ├── userAgentRotator.ts                          # scraper resilience
     │   │   └── sanitize.ts
     │   │
@@ -391,7 +398,6 @@ BACKEND STRUCTURE
     │   │
     │   ├── database/
     │   │   ├── index.ts
-    │   │   ├── migrations/
     │   │   └── seed/
     │   │
     │   └── constants/
