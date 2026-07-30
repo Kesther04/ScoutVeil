@@ -18,6 +18,11 @@ enum Role {
   MEMBER
 }
 
+enum AuthProvider {
+  PASSWORD
+  GOOGLE
+}
+
 enum ThreatLevel {
   LOW
   MEDIUM
@@ -55,20 +60,51 @@ enum ScanStatus {
 // ──────────────────────────────
 // Users
 // ──────────────────────────────
-
 model User {
-  id             String   @id @default(cuid())
-  email          String   @unique
-  passwordHash   String
-  name           String?
-  companyName    String
-  role           Role     @default(MEMBER)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id                String       @id @default(cuid())
+  email             String       @unique
+  passwordHash      String?
+  fullName          String
+  companyName       String?
+  avatarUrl         String?
+  authProvider      AuthProvider @default(PASSWORD)
+  googleId          String?      @unique
+  profileIncomplete Boolean      @default(false)
+  role              Role         @default(OWNER)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
 
   alerts       Alert[]
+  refreshTokens  RefreshToken[]
+  passwordResets PasswordReset[]
 
   @@map("users")
+}
+
+model RefreshToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model PasswordReset {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@map("password_resets")
 }
 
 // ──────────────────────────────

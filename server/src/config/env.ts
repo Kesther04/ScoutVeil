@@ -4,19 +4,17 @@ const envSchema = z.object({
   NODE_ENV:     z.enum(["development", "test", "production"]).default("development"),
   PORT:         z.string().default("5000"),
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
+  GOOGLE_CLIENT_ID: z.string().min(1, "GOOGLE_CLIENT_ID is required"),
   JWT_ACCESS_SECRET:   z.string().min(28, "JWT_ACCESS_SECRET must be at least 28 characters"),
   JWT_REFRESH_SECRET:  z.string().min(28, "JWT_REFRESH_SECRET must be at least 28 characters"),
-
-  // Google Gemini
-  GROQ_API_KEY: z.string().min(1, "GROQ_API_KEY is required"),
-  GROQ_MODEL:   z.string().min(1, "GROQ_MODEL is required"),
-
-  // // OpenAI (Now optional to avoid validation errors if you stop using it)
-  // OPENAI_API_KEY: z.string().optional(),
-  // OPENAI_MODEL:   z.string().default("gpt-4o-mini"),
-
-  // Optional
   FRONTEND_URL: z.string().default("https://scoutveil.vercel.app").describe("The URL of the frontend application, used for CORS and reset links"),
+  COOKIE_SECURE: z.coerce.boolean().default(false),
+  COOKIE_DOMAIN: z.string().default("localhost"),
+
+  ACCESS_TOKEN_TTL: z.coerce.number().default(15),
+  REFRESH_TOKEN_TTL_DAYS: z.coerce.number().default(7),
+  REFRESH_TOKEN_TTL_DAYS_REMEMBER_ME: z.coerce.number().default(30),
+  PASSWORD_RESET_TTL_MINUTES: z.coerce.number().default(15),
 });
 
 function loadEnv() {

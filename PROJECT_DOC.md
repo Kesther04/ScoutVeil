@@ -9,19 +9,31 @@ FRONTEND STRUCTURE
     │   ├── App.tsx
     │   ├── main.tsx
     │   ├── router.tsx
+    |   ├── FallBack.tsx
+    |   ├── DashboardShell.tsx
+    |   ├── Home.tsx
     │   └── layout.tsx
+    |   
     │
     ├── modules/
     │
     │   ├── auth/
     │   │   ├── components/
+    │   │   │   ├── AuthMisc.tsx
+    │   │   │   ├── AuthShell.tsx
+    │   │   │   ├── CompleteProfileFomr.tsx
+    │   │   │   ├── ForgotPasswordForm.tsx
+    │   │   │   ├── FormField.tsx
+    │   │   │   ├── GoogleButton.tsx
+    │   │   │   ├── ResetPasswordForm.tsx
     │   │   │   ├── LoginForm.tsx
     │   │   │   └── RegisterForm.tsx
     │   │   ├── pages/
-    │   │   │   ├── LoginPage.tsx
-    │   │   │   └── RegisterPage.tsx
+    │   │   │   └── AuthPage.tsx
     │   │   ├── hooks/
     │   │   │   └── useAuth.ts
+    │   │   ├── context/
+    │   │   │   └── AuthContext.tsx
     │   │   ├── api.ts
     │   │   ├── types.ts
     │   │   └── index.ts
@@ -167,11 +179,20 @@ FRONTEND STRUCTURE
 
 BACKEND STRUCTURE
 ```server/
+└── prisma/
+    │   ├── schema.prisma
+    │   ├── migrations/
+    │   └── seed.ts
+    |
+    |
+    |
+    ├── prisma.config.ts 
+    |
 └── src/
     │
     ├── server.ts                                # bootstrap only (listen)
     ├── app.ts                                   # express setup
-    │
+    |
     ├── modules/
     │
     │   ├── competitors/                          # Supporting domain
@@ -407,10 +428,6 @@ BACKEND STRUCTURE
     │       ├── signal.events.ts                              # signal detected
     │       └── alert.events.ts                                # high-priority alert fired
     │
-    ├── prisma/
-    │   ├── schema.prisma
-    │   ├── migrations/
-    │   └── seed.ts
     │
     ├── config/
     │   ├── env.ts
