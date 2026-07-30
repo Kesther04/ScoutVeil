@@ -4,6 +4,7 @@ import helmet from "helmet"
 import { env } from "./config/env";
 import { authRouter } from "./modules/users";
 import cookieParser from "cookie-parser";
+import { errorMiddleware } from "./shared/middlewares/error.middleware";
 
 const app = express();
 
@@ -12,8 +13,6 @@ const app = express();
 app.use(express.json());
 
 app.use(cookieParser());
-
-app.use(cors());
 
 app.use(helmet());
 
@@ -46,5 +45,8 @@ app.get("/", (_, res) => {
 
 // Module routers method
 app.use("/auth", authRouter );
+
+
+app.use(errorMiddleware);
 
 export default app;

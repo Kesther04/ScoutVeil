@@ -20,6 +20,8 @@ export function validate(schema: ZodSchema) {
       return next(new AppError("Please fix the highlighted fields.", 422, fieldErrors));
     }
 
+    
+
     req.body = result.data;
     next();
   };

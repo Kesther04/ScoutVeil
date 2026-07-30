@@ -23,24 +23,13 @@ function respondWithSession(
 
 export const authController = {
   async register(req: Request, res: Response) {
-    try {
-      const session = await authService.register(req.body);
-      return respondWithSession(res, session, 201);
-    } catch (error) {
-      console.error("Registration error:", error);
-
-      // If your authService throws custom operational errors (e.g. 400/409)
-      if (error instanceof Error) {
-        return res.status(400).json({ error: error.message });
-      }
-
-      return res.status(500).json({ error: "Internal Server Error" });
-    }
+    const session = await authService.register(req.body);
+    return respondWithSession(res, session, 201);
   },
 
   async login(req: Request, res: Response) {
     const session = await authService.login(req.body);
-    respondWithSession(res, session);
+    return respondWithSession(res, session);
   },
 
   async google(req: Request, res: Response) {

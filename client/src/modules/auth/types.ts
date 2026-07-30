@@ -49,7 +49,6 @@ export interface ResetPasswordPayload {
 
 export interface CompleteProfilePayload {
   companyName: string;
-  role?: string;
 }
 
 export type AuthFieldErrors = Record<string, string>;

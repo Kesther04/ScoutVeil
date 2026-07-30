@@ -40,7 +40,6 @@ export interface LoginInput {
 
 export interface CompleteProfileInput {
   companyName: string;
-  role?: Role;
 }
 
 export type { AuthProvider, Role };

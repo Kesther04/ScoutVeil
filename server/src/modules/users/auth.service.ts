@@ -60,7 +60,7 @@ export const authService = {
   },
 
   async completeProfile(userId: string, input: CompleteProfileInput) {
-    const user = await userRepository.completeProfile(userId, input.companyName, input.role);
+    const user = await userRepository.completeProfile(userId, input.companyName);
     return toPublicUser(user);
   },
 

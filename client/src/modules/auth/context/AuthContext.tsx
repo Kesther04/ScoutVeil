@@ -48,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactElemen
       if (nextUser.profileIncomplete) {
         navigate("/auth/complete-profile", { replace: true });
       } else {
-        navigate("/dashboard", { replace: true });
+        navigate("/app", { replace: true });
       }
     },
     [navigate]
@@ -82,7 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactElemen
     async (payload: CompleteProfilePayload) => {
       const { user } = await authApi.completeProfile(payload);
       setUser(user);
-      navigate("/dashboard", { replace: true });
+      navigate("/app", { replace: true });
     },
     [navigate]
   );
@@ -115,20 +115,20 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactElemen
    * Restore session on page load / refresh by asking the backend who the
    * current cookie/session belongs to.
    */
-  useEffect(() => {
-    const restoreSession = async () => {
-      try {
-        const { user } = await authApi.me();
-        setUser(user);
-      } catch {
-        setUser(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const restoreSession = async () => {
+  //     try {
+  //       const { user } = await authApi.me();
+  //       setUser(user);
+  //     } catch {
+  //       setUser(null);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
 
-    restoreSession();
-  }, []);
+  //   restoreSession();
+  // }, []);
 
   const value = useMemo<AuthContextType>(
     () => ({

@@ -50,13 +50,13 @@ export const userRepository = {
     });
   },
 
-  completeProfile(id: string, companyName: string, role?: "ADMIN" | "MEMBER" | "OWNER"): Promise<User> {
+  completeProfile(id: string, companyName: string ): Promise<User> {
     return prisma.user.update({
       where: { id },
       data: {
         companyName,
         profileIncomplete: false,
-        ...(role ? { role } : {}),
+        // ...(role ? { role } : {}),
       },
     });
   },

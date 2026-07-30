@@ -1,78 +1,56 @@
+import { apiClient } from "../../services/client";
 import {
-  ApiError,
-  type AuthFieldErrors,
-  type AuthResponse,
+  // ApiError,
+  // type AuthFieldErrors,
+  // type AuthResponse,
   type CompleteProfilePayload,
   type ForgotPasswordPayload,
   type GoogleAuthPayload,
   type LoginPayload,
   type RegisterPayload,
   type ResetPasswordPayload,
-  type User,
+  // type User,
 } from "./types";
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? "/api";
-
-async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const res = await fetch(`${BASE_URL}${path}`, {
-    ...options,
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-  });
-
-  const isJson = res.headers.get("content-type")?.includes("application/json");
-  const body = isJson ? await res.json() : null;
-
-  if (!res.ok) {
-    const message = body?.message ?? "Something went wrong. Please try again.";
-    const fieldErrors: AuthFieldErrors | undefined = body?.errors;
-    throw new ApiError(message, res.status, fieldErrors);
-  }
-
-  return body as T;
-}
 
 export const authApi = {
-  login: (payload: LoginPayload) =>
-    request<AuthResponse>("/auth/login", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    }),
+  login: async (payload: LoginPayload) => {
+    const response = await apiClient.post("/auth/login", payload);
+    return response.data;
+  },
 
-  register: (payload: RegisterPayload) =>
-    request<AuthResponse>("/auth/register", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    }),
+  register: async (payload: RegisterPayload) => {
+    const response = await apiClient.post("/auth/register", payload);
+    return response.data;
+  },
 
-  continueWithGoogle: (payload: GoogleAuthPayload) =>
-    request<AuthResponse>("/auth/google", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    }),
+  continueWithGoogle: async (payload: GoogleAuthPayload) => {
+    const response = await apiClient.post("/auth/google", payload);
+    return response.data;
+  },
 
-  completeProfile: (payload: CompleteProfilePayload) =>
-    request<{ user: User }>("/auth/complete-profile", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    }),
+  completeProfile: async (payload: CompleteProfilePayload) => {
+    const response = await apiClient.post("/auth/complete-profile", payload);
+    return response.data;
+  },
+    
+  forgotPassword: async (payload: ForgotPasswordPayload) => {
+    const response = await apiClient.post("/auth/forgot-password", payload);
+    return response.data;
+  },
 
-  forgotPassword: (payload: ForgotPasswordPayload) =>
-    request<{ message: string }>("/auth/forgot-password", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    }),
+  resetPassword: async (payload: ResetPasswordPayload) => {
+    const response = await apiClient.post("/auth/reset-password", payload);
+    return response.data;
+  },
 
-  resetPassword: (payload: ResetPasswordPayload) =>
-    request<{ message: string }>("/auth/reset-password", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    }),
+  me: async () => {
+    const response = await apiClient.get("/auth/me");
+    return response.data;
+  },
 
-  me: () => request<{ user: User }>("/auth/me", { method: "GET" }),
-
-  logout: () => request<{ message: string }>("/auth/logout", { method: "POST" }),
+  logout: async () => {
+    const response = await apiClient.post("/auth/logout");
+    return response.data;
+  },
 };

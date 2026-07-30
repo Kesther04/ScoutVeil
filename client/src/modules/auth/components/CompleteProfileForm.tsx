@@ -4,19 +4,19 @@ import FormField from "./FormField";
 import { ErrorBanner, SubmitButton } from "./AuthMisc";
 import { useAuth, getErrorMessage } from "../hooks/useAuth";
 
-const ROLE_OPTIONS = [
-  "Founder / CEO",
-  "Co-founder",
-  "Product",
-  "Marketing / Growth",
-  "Sales",
-  "Other",
-];
+// const ROLE_OPTIONS = [
+//   "Founder / CEO",
+//   "Co-founder",
+//   "Product",
+//   "Marketing / Growth",
+//   "Sales",
+//   "Other",
+// ];
 
 export default function CompleteProfileForm() {
   const { user, completeProfile } = useAuth();
   const [companyName, setCompanyName] = useState("");
-  const [role, setRole] = useState("");
+  // const [role, setRole] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,7 +25,7 @@ export default function CompleteProfileForm() {
     setError(null);
     setIsLoading(true);
     try {
-      await completeProfile({ companyName, role: role || undefined });
+      await completeProfile({ companyName });
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
@@ -66,7 +66,7 @@ export default function CompleteProfileForm() {
           hint="Used to tailor your competitor watchlist and digest."
         />
 
-        <div className="flex flex-col gap-1.5">
+        {/* <div className="flex flex-col gap-1.5">
           <label htmlFor="role" className="text-xs font-medium text-[#94A3B8] tracking-wide">
             Your role <span className="text-[#565A72]">(optional)</span>
           </label>
@@ -86,7 +86,7 @@ export default function CompleteProfileForm() {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
 
         <SubmitButton isLoading={isLoading}>
           Finish setting up
