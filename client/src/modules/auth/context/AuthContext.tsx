@@ -3,7 +3,7 @@
 import {
   createContext,
   useCallback,
-  useEffect,
+  // useEffect,
   useMemo,
   useState,
   type ReactElement,
@@ -37,7 +37,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }): ReactElement {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading] = useState(true);
   const navigate = useNavigate();
 
   /** Routes a freshly authenticated user to the right place, sending
