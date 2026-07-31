@@ -164,9 +164,11 @@ FRONTEND STRUCTURE
     │   └── constants/
     │       ├── threatLevels.ts
     │       ├── signalTypes.ts
+    │       ├── tokenStore.ts
     │       └── osintSources.ts
     │
     ├── services/
+    │   ├── client.ts
     │   └── http.ts
     │
     ├── styles/

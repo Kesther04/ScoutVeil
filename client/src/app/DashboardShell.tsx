@@ -13,6 +13,9 @@ import {
   ChevronDown,
 } from "lucide-react";
 import Logo from "../shared/components/Logo";
+import Modal from "../shared/components/Modal";
+import CompetitorForm from "../modules/competitors/components/CompetitorForm";
+import { useCompetitors } from "../modules/competitors/hooks/useCompetitors";
 
 /* ------------------------------------------------------------------ */
 /*  DashboardShell                                                      */
@@ -102,7 +105,8 @@ function usePageHeading() {
 
 /* ------------------------------- Sidebar ------------------------------- */
 
-function Sidebar() {
+function Sidebar({setModalOpen}: {setModalOpen: (open: boolean) => void}) {
+  
   return (
     <aside className="hidden lg:flex lg:flex-col w-64 shrink-0 border-r border-white/5 bg-[#0B0D14] h-screen sticky top-0">
       <div className="h-18 flex items-center px-6 border-b border-white/5">
@@ -110,7 +114,7 @@ function Sidebar() {
       </div>
 
       <div className="px-4 pt-5">
-        <button className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#E8A64A] hover:bg-[#F0B96B] transition-colors text-[#0B0D14] text-sm font-medium px-4 py-2.5">
+        <button className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#E8A64A] hover:bg-[#F0B96B] transition-colors text-[#0B0D14] text-sm font-medium px-4 py-2.5" onClick={() => setModalOpen(true)}>
           <Plus className="w-4 h-4" />
           Add competitor
         </button>
@@ -147,6 +151,20 @@ function Sidebar() {
           </p>
         </div>
       </div>
+      {/* <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Add a competitor"
+        subtitle="We'll start checking their homepage and pricing page daily."
+      >
+        <CompetitorForm
+          onSubmit={async (payload) => {
+            await addCompetitor(payload);
+            setIsModalOpen(false);
+          }}
+          onCancel={() => setIsModalOpen(false)}
+        />
+      </Modal> */}
     </aside>
   );
 }
@@ -227,13 +245,29 @@ function Topbar() {
 /* -------------------------------- Shell -------------------------------- */
 
 export default function DashboardShell(): ReactElement {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const {  addCompetitor } = useCompetitors();
   return (
     <div className="min-h-screen bg-[#0B0D14] flex">
-      <Sidebar />
+      <Sidebar setModalOpen={setIsModalOpen} />
       <div className="flex-1 min-w-0 flex flex-col">
         <Topbar />
         <main className="flex-1 px-6 py-8">
           <Outlet />
+          <Modal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            title="Add a competitor"
+            subtitle="We'll start checking their homepage and pricing page daily."
+          >
+            <CompetitorForm
+              onSubmit={async (payload) => {
+                await addCompetitor(payload);
+                setIsModalOpen(false);
+              }}
+              onCancel={() => setIsModalOpen(false)}
+            />
+          </Modal>
         </main>
       </div>
     </div>

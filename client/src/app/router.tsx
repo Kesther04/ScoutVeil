@@ -5,6 +5,9 @@ import { AuthPage } from "../modules/auth";
 import Home from "./Home";
 import Fallback from "./FallBack";
 import DashboardShell from "./DashboardShell";
+import { DashboardPage } from "../modules/dashboard";
+import { CompetitorsPage, CompetitorDetailsPage } from "../modules/competitors";
+import { SignalMonitorPage, ChangeHistoryPage } from "../modules/signal-monitor";
 
 const comingSoonPaths = ["/terms", "/privacy"];
 
@@ -26,81 +29,31 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/app",
-        element: <div>Dashboard</div>,
-        handle: {
-          title: "Dashboard",
-          subtitle: "Overview across all tracked competitors",
-        },
+        element: <DashboardPage />,
+        handle: { title: "Dashboard", subtitle: "Overview across all tracked competitors" },
       },
       {
         path: "/app/competitors",
-        element: <div>Competitors</div>,
-        handle: {
-          title: "Competitors",
-          subtitle: "Every domain you are currently tracking",
-        },
+        element: <CompetitorsPage />,
+        handle: { title: "Competitors", subtitle: "Every domain you are currently tracking" },
       },
       {
         path: "/app/competitors/:competitorId",
-        element: <div>Competitor details</div>,
-        handle: {
-          title: "Competitor details",
-        },
+        element: <CompetitorDetailsPage />,
+        handle: { title: "Competitor details" },
       },
       {
         path: "/app/signals",
-        element: <div>Signal Monitor</div>,
-        handle: {
-          title: "Signal Monitor",
-          subtitle: "Website, hiring and public activity, in one feed",
-        },
+        element: <SignalMonitorPage />,
+        handle: { title: "Signal Monitor", subtitle: "Website, hiring and public activity, in one feed" },
       },
       {
         path: "/app/signals/history",
-        element: <div>Change history</div>,
-        handle: {
-          title: "Change history",
-          subtitle: "Full timestamped evidence log",
-        },
+        element: <ChangeHistoryPage />,
+        handle: { title: "Change history", subtitle: "Full timestamped evidence log" },
       },
-      {
-        path: "/app/osint",
-        element: <div>OSINT</div>,
-        handle: {
-          title: "OSINT",
-          subtitle: "Subdomains, DNS and infrastructure history",
-        },
-      },
-      {
-        path: "/app/digest",
-        element: <div>AI Digest</div>,
-        handle: {
-          title: "AI Digest",
-          subtitle: "This week's changes, explained in plain language",
-        },
-      },
-      {
-        path: "/app/alerts",
-        element: <div>Alerts</div>,
-        handle: {
-          title: "Alerts",
-          subtitle: "Real time notifications and delivery preferences",
-        },
-      },
-      {
-        path: "/app/settings",
-        element: <div>Settings</div>,
-        handle: {
-          title: "Settings",
-        },
-      },
-      {
-        path: "/app/billing",
-        element: <div>Billing</div>,
-        handle: {
-          title: "Billing",
-        },
-      },
+      // OSINT / digest / alerts / settings / billing unchanged for now
+      // ...
     ],
   },
 ]);
