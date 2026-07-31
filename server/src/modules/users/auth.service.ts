@@ -53,7 +53,7 @@ export const authService = {
     }
 
     if (!user) {
-      user = await userRepository.createWithGoogle(profile  as any);
+      user = await userRepository.createWithGoogle(profile as any);
     }
 
     return this.issueSession(user, true);
@@ -107,7 +107,42 @@ export const authService = {
     }
   },
 
-  /** Shared by register/login/google: mints tokens + persists the refresh token. */
+  async refreshToken(refreshTokenRaw?: string) {
+    if (!refreshTokenRaw) {
+      throw new AppError("Refresh token missing", 401);
+    }
+
+    const tokenHash = hashOpaqueToken(refreshTokenRaw);
+    const existingToken = await userRepository.findRefreshToken(tokenHash);
+
+    if (!existingToken) {
+      throw new AppError("Invalid or expired refresh token", 401);
+    }
+
+    // Reuse Detection: If a revoked token is presented, compromise is suspected.
+    // Revoke all sessions for this user.
+    if (existingToken.revokedAt) {
+      await userRepository.revokeAllRefreshTokens(existingToken.userId);
+      throw new AppError("Security compromise detected. Please sign in again.", 401);
+    }
+
+    if (new Date() > existingToken.expiresAt) {
+      throw new AppError("Refresh token expired", 401);
+    }
+
+    const user = await userRepository.findById(existingToken.userId);
+    if (!user) {
+      throw new AppError("User not found", 404);
+    }
+
+    // Revoke current token (Refresh Token Rotation)
+    await userRepository.revokeRefreshToken(tokenHash);
+
+    // Issue new session with fresh tokens
+    return this.issueSession(user, true);
+  },
+
+  /** Shared by register/login/google/refresh: mints tokens + persists the refresh token. */
   async issueSession(user: PrismaUser, rememberMe: boolean) {
     const ttlDays = rememberMe ? env.REFRESH_TOKEN_TTL_DAYS_REMEMBER_ME : env.REFRESH_TOKEN_TTL_DAYS;
     const { accessToken, refreshTokenRaw, refreshTokenHash } = buildTokens(user);

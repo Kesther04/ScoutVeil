@@ -3,7 +3,7 @@
 import {
   createContext,
   useCallback,
-  // useEffect,
+  useEffect,
   useMemo,
   useState,
   type ReactElement,
@@ -37,7 +37,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }): ReactElement {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   /** Routes a freshly authenticated user to the right place, sending
@@ -115,20 +115,20 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactElemen
    * Restore session on page load / refresh by asking the backend who the
    * current cookie/session belongs to.
    */
-  // useEffect(() => {
-  //   const restoreSession = async () => {
-  //     try {
-  //       const { user } = await authApi.me();
-  //       setUser(user);
-  //     } catch {
-  //       setUser(null);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const restoreSession = async () => {
+      try {
+        const { user } = await authApi.refresh();
+        setUser(user);
+      } catch {
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  //   restoreSession();
-  // }, []);
+    restoreSession();
+  }, []);
 
   const value = useMemo<AuthContextType>(
     () => ({

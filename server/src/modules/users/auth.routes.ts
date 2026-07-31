@@ -42,4 +42,10 @@ router.post(
 router.get("/me", sessionRateLimiter, requireAuth, asyncHandler(authController.me));
 router.post("/logout", sessionRateLimiter, asyncHandler(authController.logout));
 
+router.post(
+  "/refresh",
+  sessionRateLimiter,
+  asyncHandler(authController.refreshToken)
+);
+
 export { router as authRoutes };

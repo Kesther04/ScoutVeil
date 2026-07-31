@@ -66,4 +66,10 @@ export const authController = {
     clearAuthCookies(res);
     res.status(200).json({ message: "Signed out." });
   },
+
+  async refreshToken(req: Request, res: Response) {
+    const refreshTokenRaw = req.cookies?.[COOKIE_NAMES.REFRESH_COOKIE];
+    const session = await authService.refreshToken(refreshTokenRaw);
+    return respondWithSession(res, session);
+  }
 };

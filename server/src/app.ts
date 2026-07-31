@@ -4,6 +4,8 @@ import helmet from "helmet"
 import { env } from "./config/env";
 import { authRouter } from "./modules/users";
 import cookieParser from "cookie-parser";
+import { competitorRouter } from "./modules/competitors";
+import { signalMonitorRouter } from "./modules/signal-monitor";
 import { errorMiddleware } from "./shared/middlewares/error.middleware";
 
 const app = express();
@@ -45,6 +47,8 @@ app.get("/", (_, res) => {
 
 // Module routers method
 app.use("/auth", authRouter );
+app.use("/competitors", competitorRouter);
+app.use("/signals", signalMonitorRouter);
 
 
 app.use(errorMiddleware);
