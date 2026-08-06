@@ -8,51 +8,53 @@ export const apiClient = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true, // needed since backend has credentials: true
+  withCredentials: true,
 });
 
-// runs before every request — always picks up the latest token
 apiClient.interceptors.request.use((config) => {
   const token = getAccessToken();
-
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-
-    return config;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
-// handles expired tokens globally
+let refreshPromise: Promise<string> | null = null;
+
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Don't try to refresh the refresh request
-    if (originalRequest.url === "/auth/refresh") {
-        clearAccessToken();
-        return Promise.reject(error);
+    if (originalRequest?.url === "/auth/refresh") {
+      clearAccessToken();
+      return Promise.reject(error);
     }
 
-
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry
-    ) {
+    if (error.response?.status === 401 && !originalRequest?._retry) {
       originalRequest._retry = true;
 
       try {
-        const response = await apiClient.post("/auth/refresh");
+        // De-dupe concurrent 401s so we only hit /auth/refresh once.
+        if (!refreshPromise) {
+          refreshPromise = apiClient
+            .post("/auth/refresh")
+            .then((res) => {
+              const token = res.data.tokens.accessToken;
+              setAccessToken(token);
+              return token;
+            })
+            .finally(() => {
+              refreshPromise = null;
+            });
+        }
 
-        setAccessToken(response.data.data.accessToken);
-
-        originalRequest.headers.Authorization =
-          `Bearer ${response.data.data.accessToken}`;
-
+        const newToken = await refreshPromise;
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
         return apiClient(originalRequest);
-      } catch {
+      } catch (refreshError) {
         clearAccessToken();
-        window.location.href = "/auth/login";
+        return Promise.reject(refreshError);
       }
     }
 

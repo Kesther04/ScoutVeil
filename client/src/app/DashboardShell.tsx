@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ReactElement } from "react";
-import { NavLink, Outlet, useLocation, useMatches } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useMatches, useNavigate } from "react-router-dom";
 import {
   LayoutGrid,
   Users,
@@ -16,6 +16,7 @@ import Logo from "../shared/components/Logo";
 import Modal from "../shared/components/Modal";
 import CompetitorForm from "../modules/competitors/components/CompetitorForm";
 import { useCompetitors } from "../modules/competitors/hooks/useCompetitors";
+import { useAuth } from "../modules/auth";
 
 /* ------------------------------------------------------------------ */
 /*  DashboardShell                                                      */
@@ -171,7 +172,7 @@ function Sidebar({setModalOpen}: {setModalOpen: (open: boolean) => void}) {
 
 /* -------------------------------- Topbar -------------------------------- */
 
-function Topbar() {
+function Topbar({user, logout}: {user: any; logout: () => Promise<void>}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const { title, subtitle } = usePageHeading();
 
@@ -208,7 +209,11 @@ function Topbar() {
             className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/2 hover:bg-white/5 transition-colors pl-1 pr-2 py-1"
           >
             <div className="w-7 h-7 rounded-full bg-[#E8A64A]/15 flex items-center justify-center text-xs font-medium text-[#F0B96B]">
-              KO
+              {user?.avatarUrl ? (
+                <img src={user.avatarUrl} alt="" className="w-full h-full rounded-full" />
+              ) : (
+                user?.fullName.charAt(0).toUpperCase()
+              )}
             </div>
             <ChevronDown className="w-3.5 h-3.5 text-[#94A3B8]" />
           </button>
@@ -228,12 +233,15 @@ function Topbar() {
                 Billing
               </a>
               <div className="my-1 border-t border-white/5" />
-              <a
-                href="/auth/login"
-                className="block px-3 py-2 text-sm text-[#E85A4A] hover:bg-white/5"
+              <button
+                onClick={async () => {
+                  // Handle logout logic
+                  await logout();
+                }}
+                className="block px-3 py-2 text-sm text-[#E85A4A] hover:bg-white/5 w-full text-left"
               >
                 Log out
-              </a>
+              </button>
             </div>
           )}
         </div>
@@ -247,11 +255,27 @@ function Topbar() {
 export default function DashboardShell(): ReactElement {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {  addCompetitor } = useCompetitors();
+  const { isAuthenticated, user, isLoading, logout } = useAuth();
+
+  // check if user is logged in, if not redirect to login page
+  const useRequireAuth = () => {
+    const navigate = useNavigate();
+    
+    useEffect(() => {
+      if (isLoading) return;
+      
+      if (!isAuthenticated || !user) {
+        navigate("/auth/login", { replace: true });
+      }
+    }, [isAuthenticated, user, navigate, isLoading]);
+  };
+
+  useRequireAuth();
   return (
     <div className="min-h-screen bg-[#0B0D14] flex">
       <Sidebar setModalOpen={setIsModalOpen} />
       <div className="flex-1 min-w-0 flex flex-col">
-        <Topbar />
+        <Topbar user={user} logout={logout} />
         <main className="flex-1 px-6 py-8">
           <Outlet />
           <Modal

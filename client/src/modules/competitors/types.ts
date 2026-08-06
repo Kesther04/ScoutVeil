@@ -7,7 +7,7 @@ export type Competitor = {
   domain: string;
   name?: string | null;
   status: CompetitorStatus;
-  addedAt: string;
+  createdAt: string;
   lastChangeAt?: string | null;
   lastChangeSummary?: string | null;
   lastChangePageType?: "homepage" | "pricing" | null;

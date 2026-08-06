@@ -22,38 +22,39 @@ export const router = createBrowserRouter([
       { path: "/auth/reset-password", element: <AuthPage /> },
       { path: "/auth/complete-profile", element: <AuthPage /> },
       ...comingSoonPaths.map((path) => ({ path, element: <Fallback /> })),
+        {
+          element: <DashboardShell />,
+          children: [
+            {
+              path: "/app",
+              element: <DashboardPage />,
+              handle: { title: "Dashboard", subtitle: "Overview across all tracked competitors" },
+            },
+            {
+              path: "/app/competitors",
+              element: <CompetitorsPage />,
+              handle: { title: "Competitors", subtitle: "Every domain you are currently tracking" },
+            },
+            {
+              path: "/app/competitors/:competitorId",
+              element: <CompetitorDetailsPage />,
+              handle: { title: "Competitor details" },
+            },
+            {
+              path: "/app/signals",
+              element: <SignalMonitorPage />,
+              handle: { title: "Signal Monitor", subtitle: "Website, hiring and public activity, in one feed" },
+            },
+            {
+              path: "/app/signals/history",
+              element: <ChangeHistoryPage />,
+              handle: { title: "Change history", subtitle: "Full timestamped evidence log" },
+            },
+            // OSINT / digest / alerts / settings / billing unchanged for now
+            // ...
+          ],
+        },
     ],
   },
-  {
-    element: <DashboardShell />,
-    children: [
-      {
-        path: "/app",
-        element: <DashboardPage />,
-        handle: { title: "Dashboard", subtitle: "Overview across all tracked competitors" },
-      },
-      {
-        path: "/app/competitors",
-        element: <CompetitorsPage />,
-        handle: { title: "Competitors", subtitle: "Every domain you are currently tracking" },
-      },
-      {
-        path: "/app/competitors/:competitorId",
-        element: <CompetitorDetailsPage />,
-        handle: { title: "Competitor details" },
-      },
-      {
-        path: "/app/signals",
-        element: <SignalMonitorPage />,
-        handle: { title: "Signal Monitor", subtitle: "Website, hiring and public activity, in one feed" },
-      },
-      {
-        path: "/app/signals/history",
-        element: <ChangeHistoryPage />,
-        handle: { title: "Change history", subtitle: "Full timestamped evidence log" },
-      },
-      // OSINT / digest / alerts / settings / billing unchanged for now
-      // ...
-    ],
-  },
+
 ]);

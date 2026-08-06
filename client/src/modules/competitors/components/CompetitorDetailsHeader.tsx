@@ -40,7 +40,7 @@ export default function CompetitorDetailsHeader({
             </Badge>
           </div>
           <p className="text-sm text-[#94A3B8] mt-0.5">
-            {competitor.domain} · added {formatDate(competitor.addedAt)}
+            {competitor.domain} · added {formatDate(competitor.createdAt)}
           </p>
         </div>
       </div>

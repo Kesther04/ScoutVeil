@@ -15,6 +15,7 @@ export const competitorsApi = {
 
   getById: async (id: string): Promise<Competitor> => {
     const response = await apiClient.get(`/competitors/${id}`);
+    console.log(response.data.data);
     return response.data.data;
   },
 
